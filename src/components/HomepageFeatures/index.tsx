@@ -11,32 +11,32 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
+    title: 'Data Science Pipeline',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Complete end-to-end data science workflow: from web scraping and data cleaning
+        through embeddings, clustering, and interactive visualization.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Job Market Intelligence',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Discover data science career opportunities with detailed salary analysis,
+        skill requirements, and market trends across 6,200+ job postings.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Interactive Dashboard',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Explore job clusters through t-SNE visualizations, filter by skills and salary,
+        and gain insights into the current data science job market landscape.
       </>
     ),
   },

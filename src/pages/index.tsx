@@ -21,7 +21,12 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            Explore Our Project - 15m ⏱️
+          </Link>
+          <Link
+            className="button button--outline button--lg"
+            to="/docs/project-journey">
+            View Project Journey
           </Link>
         </div>
       </div>
@@ -33,8 +38,8 @@ export default function Home(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      title={`${siteConfig.title} - Data Science Career Analysis`}
+      description="Comprehensive analysis of the data science job market using web scraping, machine learning, and interactive visualization. DIS08 Datenmodellierung course project [WS 2025/2026].">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

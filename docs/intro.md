@@ -2,46 +2,33 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Job Market Insights: Data Science Career Analysis
 
-Let's discover **Docusaurus in less than 5 minutes**.
+## Course Context
 
-## Getting Started
+This project was completed as part of **DIS08 Datenmodellierung/Data Modeling [WS 2025/2026]**, a data modeling course focused on practical applications of data science methodologies.
 
-Get started by **creating a new site**.
+## Project Overview
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+**Job Market Insights** is a comprehensive analysis of the data science job market, designed to help students understand current career opportunities and requirements in the field. The project combines web scraping, natural language processing, machine learning clustering, and interactive data visualization to provide actionable insights into:
 
-### What you'll need
+- Current salary ranges for data science positions
+- Required technical skills and qualifications
+- Job market trends and patterns
+- Geographic distribution of opportunities
 
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+## Objectives
 
-## Generate a new site
+The main objectives of this project were to:
 
-Generate a new Docusaurus site using the **classic template**.
+1. **Collect comprehensive job market data** through multiple scraping approaches
+2. **Process and analyze job descriptions** using advanced NLP techniques
+3. **Identify skill requirements** and market trends through clustering analysis
+4. **Create an interactive dashboard** for exploring the findings
+5. **Provide practical insights** for data science students entering the job market
 
-The classic template will automatically be added to your project after you run the command:
+## Project Journey
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+This documentation showcases the complete project lifecycle, from initial brainstorming through data collection challenges, preprocessing pipelines, analysis techniques, and final visualization. The project demonstrates practical applications of data science methodologies while addressing real-world challenges like anti-scraping measures, data quality issues, and complex analysis requirements.
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+[Explore the complete project journey →](./project-journey)

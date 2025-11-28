@@ -5,8 +5,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
+  title: 'Job Market Insights',
+  tagline: 'Data Science Career Analysis - DIS08 Datenmodellierung [WS 2025/2026]',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -15,15 +15,15 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://job-market-insights.vercel.app',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'your-github-username', // Usually your GitHub org/user name.
+  projectName: 'job-market-insights', // Usually your repo name.
 
   onBrokenLinks: 'throw',
 
@@ -68,6 +68,17 @@ const config: Config = {
     ],
   ],
 
+  themes: [
+    [
+      '@docusaurus/theme-mermaid',
+      {
+        theme: { light: 'default', dark: 'dark' },
+      },
+    ],
+  ],
+
+  plugins: [],
+
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
@@ -75,21 +86,25 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'My Site',
+      title: 'Job Market Insights',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Job Market Insights Logo',
         src: 'img/logo.svg',
       },
       items: [
         {
           type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
+          sidebarId: 'projectSidebar',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Project Documentation',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          to: '/docs/project-journey',
+          label: 'Project Journey',
+          position: 'left',
+        },
+        {
+          href: 'https://github.com/your-github-username/job-market-insights',
           label: 'GitHub',
           position: 'right',
         },
@@ -99,46 +114,83 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Project',
           items: [
             {
-              label: 'Tutorial',
+              label: 'Introduction',
               to: '/docs/intro',
             },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              label: 'Project Journey',
+              to: '/docs/project-journey',
             },
             {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
+              label: 'Data Collection',
+              to: '/docs/data-collection/intro',
             },
             {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
+              label: 'Data Cleaning',
+              to: '/docs/data-cleaning/intro',
             },
           ],
         },
         {
-          title: 'More',
+          title: 'Analysis',
           items: [
             {
-              label: 'Blog',
-              to: '/blog',
+              label: 'Data Presentation',
+              to: '/docs/data-presentation/intro',
             },
             {
-              label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              label: 'Interactive Dashboard',
+              to: '/docs/data-presentation/dashboard',
+            },
+            {
+              label: 'Skills Overview',
+              to: '/docs/data-presentation/skills-overview',
+            },
+            {
+              label: 'Limitations',
+              to: '/docs/conclusion/limitations',
+            },
+          ],
+        },
+        {
+          title: 'Course',
+          items: [
+            {
+              label: 'DIS08 Datenmodellierung',
+              href: 'https://www.example-university.edu/course/dis08', // Replace with actual course URL
+            },
+            {
+              label: 'Data Science Program',
+              href: 'https://www.example-university.edu/data-science', // Replace with actual program URL
+            },
+            {
+              label: 'Academic Year 2025/2026',
+              href: '#',
+            },
+          ],
+        },
+        {
+          title: 'Resources',
+          items: [
+            {
+              label: 'GitHub Repository',
+              href: 'https://github.com/your-github-username/job-market-insights',
+            },
+            {
+              label: 'Python Implementation',
+              to: '/docs/data-collection/indeed-scraping',
+            },
+            {
+              label: 'Interactive Demo',
+              href: 'https://job-market-insights.vercel.app', // Replace with actual deployment URL
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Job Market Insights Project - DIS08 Datenmodellierung [WS 2025/2026]. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
