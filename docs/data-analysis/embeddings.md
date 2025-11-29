@@ -352,3 +352,4 @@ normalized_embeddings = normalize_embeddings(embeddings_array)
 - **Similarity computation**: Efficient cosine distance calculations
 
 [Next: K-means Clustering Analysis →](./clustering)
+

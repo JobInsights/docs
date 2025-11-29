@@ -390,3 +390,4 @@ print(f"  - Relations: {len(relations_db)} records")
 - **Market insights**: Understand regional skill demands
 
 [Next: Database Storage →](./database)
+

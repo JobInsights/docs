@@ -615,3 +615,4 @@ recommendations = generate_career_recommendations(tagged_jobs, user_skills)
 - **Market intelligence**: Stay ahead of industry trends
 
 The skills overview transforms raw job data into actionable career intelligence, helping users make informed decisions about their professional development in the data science field.
+

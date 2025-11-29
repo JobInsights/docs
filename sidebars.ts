@@ -80,26 +80,38 @@ const sidebars: SidebarsConfig = {
           type: 'doc',
           id: 'data-cleaning/data-cleanup',
           label: 'Data Cleanup'
+        }
+      ]
+    },
+    {
+      type: 'category',
+      label: 'Data Analysis',
+      collapsed: true,
+      items: [
+        {
+          type: 'doc',
+          id: 'data-analysis/intro',
+          label: 'Overview'
         },
         {
           type: 'doc',
-          id: 'data-cleaning/embeddings',
+          id: 'data-analysis/embeddings',
           label: 'Embeddings'
         },
         {
           type: 'doc',
-          id: 'data-cleaning/clustering',
+          id: 'data-analysis/clustering',
           label: 'Clustering'
         },
         {
           type: 'doc',
-          id: 'data-cleaning/keyword-tagging',
+          id: 'data-analysis/keyword-tagging',
           label: 'Keyword Tagging'
         },
         {
           type: 'doc',
-          id: 'data-cleaning/database',
-          label: 'Database Storage'
+          id: 'data-analysis/cluster-analysis',
+          label: 'Cluster Analysis & Recommendations'
         }
       ]
     },
@@ -112,6 +124,11 @@ const sidebars: SidebarsConfig = {
           type: 'doc',
           id: 'data-presentation/intro',
           label: 'Overview'
+        },
+        {
+          type: 'doc',
+          id: 'data-presentation/database',
+          label: 'Database Architecture'
         },
         {
           type: 'doc',

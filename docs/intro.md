@@ -26,9 +26,3 @@ The main objectives of this project were to:
 3. **Identify skill requirements** and market trends through clustering analysis
 4. **Create an interactive dashboard** for exploring the findings
 5. **Provide practical insights** for data science students entering the job market
-
-## Project Journey
-
-This documentation showcases the complete project lifecycle, from initial brainstorming through data collection challenges, preprocessing pipelines, analysis techniques, and final visualization. The project demonstrates practical applications of data science methodologies while addressing real-world challenges like anti-scraping measures, data quality issues, and complex analysis requirements.
-
-[Explore the complete project journey →](./project-journey)

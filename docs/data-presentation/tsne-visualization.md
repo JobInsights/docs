@@ -575,3 +575,4 @@ export default function ClusterExplorer({ clusters, onClusterSelect, selectedClu
 - **Understanding**: 89% of users report better understanding of job market structure
 
 The t-SNE visualization successfully transforms complex 725-dimensional embeddings into an intuitive exploration tool, enabling users to discover career opportunities through visual pattern recognition.
+

@@ -12,12 +12,14 @@ The data presentation phase transformed our processed job market data into an in
 ## Presentation Goals
 
 ### User-Centric Design
+
 - **Intuitive navigation**: Easy-to-use interface for job seekers and researchers
 - **Customizable views**: Flexible filtering and exploration options
 - **Real-time insights**: Interactive visualizations that respond to user selections
 - **Performance optimized**: Fast loading and smooth interactions
 
 ### Analytical Depth
+
 - **Multi-dimensional filtering**: Combine criteria across salary, skills, location, and experience
 - **Visual exploration**: t-SNE embeddings visualization for pattern discovery
 - **Skill intelligence**: Understand market demands and trends
@@ -28,6 +30,7 @@ The data presentation phase transformed our processed job market data into an in
 ### Next.js Framework Selection
 
 **Why Next.js was chosen:**
+
 - **Already experienced**: Team had existing familiarity with React/Next.js
 - **Flexible**: Supports fullstack applications with API routes
 - **Industry standard**: Widely adopted for production web applications
@@ -52,11 +55,13 @@ graph TD
 ## Key Dashboard Components
 
 ### 1. Job Discovery Interface
+
 - **Search functionality**: Find jobs by keywords, companies, or titles
 - **Results display**: Paginated, sortable job listings with key information
 - **Detail views**: Expandable job descriptions and requirements
 
 ### 2. Advanced Filtering System
+
 - **Degree requirements**: Filter by education level needs
 - **Pay range**: Salary-based filtering with distribution visualization
 - **Job type**: Full-time, part-time, contract, internship options
@@ -64,12 +69,14 @@ graph TD
 - **Location**: Geographic filtering with city/state selection
 
 ### 3. Data Visualizations
+
 - **t-SNE visualization**: 725D embeddings reduced to 2D/3D for exploration
 - **Skills overview**: Market demand analysis for key technologies
 - **Salary distributions**: Compensation insights by role and location
 - **Trend analysis**: Temporal patterns in job postings and requirements
 
 ### 4. Skills Intelligence
+
 - **Market demand**: Which skills are most requested currently
 - **Salary correlation**: How skills impact compensation
 - **Regional variations**: Skill preferences by geographic location
@@ -78,12 +85,14 @@ graph TD
 ## User Experience Design
 
 ### Accessibility & Usability
+
 - **Responsive design**: Works on desktop, tablet, and mobile devices
 - **Loading states**: Clear feedback during data fetching
 - **Error handling**: Graceful failure recovery with user guidance
 - **Progressive enhancement**: Core functionality works without JavaScript
 
 ### Performance Optimization
+
 - **Lazy loading**: Components load as needed
 - **Caching**: Database query results cached for repeated requests
 - **Pagination**: Large datasets handled efficiently
@@ -92,11 +101,13 @@ graph TD
 ## Data Privacy & Ethics
 
 ### User Data Protection
+
 - **No personal tracking**: Anonymous usage analytics only
 - **Local processing**: Sensitive operations handled server-side
 - **Data minimization**: Only necessary data collected for functionality
 
 ### Academic Integrity
+
 - **Transparent sourcing**: Clear attribution to original data sources
 - **Educational purpose**: Designed for learning and career guidance
 - **Research ethics**: Respects platform terms and user privacy
