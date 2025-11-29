@@ -381,5 +381,3 @@ for _, row in cluster_keywords.iterrows():
 - **Dynamic filtering**: Filter jobs by cluster characteristics
 - **Skill requirement summaries**: Aggregate insights per cluster
 
-[Next: Keyword Matching and Tagging →](./keyword-tagging)
-

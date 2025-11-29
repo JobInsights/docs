@@ -154,5 +154,3 @@ These challenges led us to switch to Indeed.com, which offered:
 - Clean scraping environment
 - Comprehensive job data
 - Better automation tolerance
-
-[Next: Indeed Scraping Strategy →](./indeed-scraping)

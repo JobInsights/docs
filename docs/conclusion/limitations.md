@@ -259,5 +259,3 @@ The limitations identified above provide valuable context for interpreting the p
 
 The most critical insight is that **methodological transparency and continuous improvement** are more valuable than perfect results. By openly acknowledging limitations and providing clear paths for enhancement, this project serves as both a practical tool and a foundation for future work in job market analysis.
 
-[Back to Project Overview →](../intro)
-

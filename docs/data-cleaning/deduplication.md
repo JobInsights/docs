@@ -359,5 +359,3 @@ for metric, value in quality_metrics.items():
 - **Query performance**: Faster searches and aggregations
 - **Index effectiveness**: Better database performance
 
-[Next: Data Cleanup and Normalization →](./data-cleanup)
-

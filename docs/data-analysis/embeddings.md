@@ -11,6 +11,7 @@ After cleaning our job descriptions, we converted the textual data into 725-dime
 ## Why 725 Dimensions?
 
 ### Dimensionality Decision Factors
+
 - **Semantic richness**: High dimensionality captures nuanced job requirements
 - **Computational feasibility**: Balanced against processing time and memory
 - **Clustering effectiveness**: Sufficient dimensions for meaningful job groupings
@@ -255,6 +256,7 @@ for metric, value in quality_metrics.items():
 ## Alternative Embedding Approaches Considered
 
 ### Word2Vec Embeddings
+
 ```python
 # Considered but not used due to computational complexity
 from gensim.models import Word2Vec
@@ -287,6 +289,7 @@ def generate_word2vec_embeddings(texts: List[str], vector_size: int = 725) -> np
 ```
 
 ### BERT Embeddings
+
 ```python
 # Considered but not used due to resource requirements
 from sentence_transformers import SentenceTransformer
@@ -303,12 +306,14 @@ def generate_bert_embeddings(texts: List[str]) -> np.ndarray:
 ## Why TF-IDF with 725 Dimensions?
 
 ### Advantages of Chosen Approach
+
 1. **Interpretability**: TF-IDF features directly correspond to important terms
 2. **Computational efficiency**: Faster than neural embeddings
 3. **Domain adaptation**: Captures job-specific terminology effectively
 4. **Scalability**: Handles large datasets without GPU requirements
 
 ### Dimensionality Justification
+
 - **Coverage**: 725 features capture most important job-related terms
 - **Reduction**: Balances detail with computational feasibility
 - **Clustering**: Sufficient for meaningful job similarity calculations
@@ -336,20 +341,20 @@ normalized_embeddings = normalize_embeddings(embeddings_array)
 ## Results and Impact
 
 ### Embedding Statistics
+
 - **Jobs processed**: 4,200 with valid descriptions
 - **Vocabulary size**: 8,500+ unique terms
 - **Average similarity**: 0.15 (indicating good diversity)
 - **Top terms**: "python", "machine learning", "data analysis", "sql"
 
 ### Quality Metrics
+
 - **Sparsity**: 0.92 (typical for TF-IDF)
 - **Magnitude range**: 0.8-1.2 (after L2 normalization)
 - **Distinctive terms**: Successfully captured domain-specific vocabulary
 
 ### Preparation for Clustering
+
 - **Normalized vectors**: Consistent scale for distance calculations
 - **Dimensional reduction ready**: Prepared for t-SNE visualization
 - **Similarity computation**: Efficient cosine distance calculations
-
-[Next: K-means Clustering Analysis →](./clustering)
-

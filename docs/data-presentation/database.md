@@ -497,5 +497,3 @@ def get_cluster_details(cluster_id: int):
 ```
 
 The database layer provides the foundation for our interactive dashboard, enabling complex queries, real-time analytics, and scalable user experiences.
-
-[Back to Data Cleaning Overview →](./intro)

@@ -208,5 +208,3 @@ Using this strategic approach, we successfully collected:
 - **Full job descriptions** for detailed text analysis
 - **Time-series data** enabling trend analysis
 
-[Next: Instant Data Scraper →](./instant-data-scraper)
-

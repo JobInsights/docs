@@ -201,5 +201,3 @@ Using Instant Data Scraper, we successfully collected:
 - **Foundation dataset** for clustering and visualization analysis
 
 The tool's speed enabled us to iterate quickly on data collection strategies and focus our project time on the core data science analysis and visualization components.
-
-[Next: WebScraper.io for Detailed Descriptions →](./webscraper-io)
