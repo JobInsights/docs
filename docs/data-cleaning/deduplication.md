@@ -96,10 +96,10 @@ The deduplication pipeline is implemented in the ETL layer:
 
 | Stage | Complexity | Time (1000 jobs) | Memory Usage |
 |-------|------------|------------------|--------------|
-| **Exact Match** | O(n) | <1 second | Low |
+| **Exact Match** | O(n) | &lt;1 second | Low |
 | **Fuzzy Match** | O(n²) | 2-5 minutes | High |
-| **Temporal** | O(n log n) | <1 second | Low |
-| **Quality Scoring** | O(n) | <1 second | Low |
+| **Temporal** | O(n log n) | &lt;1 second | Low |
+| **Quality Scoring** | O(n) | &lt;1 second | Low |
 
 ### Optimization Strategies
 

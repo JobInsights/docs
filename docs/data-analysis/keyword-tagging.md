@@ -98,7 +98,7 @@ The keyword tagging pipeline is implemented in the ETL layer:
 |--------|--------|----------|------------|
 | **Coverage Rate** | 80%+ of relevant skills | 85% | ✅ Excellent |
 | **Precision** | 95%+ accurate matches | 97% | ✅ High |
-| **Processing Speed** | <1 min per 1000 jobs | 15s | ✅ Fast |
+| **Processing Speed** | &lt;1 min per 1000 jobs | 15s | ✅ Fast |
 | **Category Balance** | Even distribution | 4.3 avg skills/job | ✅ Optimal |
 
 ### Category Distribution
