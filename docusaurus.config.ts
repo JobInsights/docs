@@ -18,7 +18,7 @@ const config: Config = {
   url: 'https://jobinsights.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/docs/',
+  baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -102,7 +102,7 @@ const config: Config = {
           label: 'Project Documentation',
         },
         {
-          to: '/docs/project-journey',
+          to: '/project-journey',
           label: 'Project Journey',
           position: 'left',
         },
@@ -121,19 +121,19 @@ const config: Config = {
           items: [
             {
               label: 'Introduction',
-              to: '/docs/intro',
+              to: '/intro',
             },
             {
               label: 'Project Journey',
-              to: '/docs/project-journey',
+              to: '/project-journey',
             },
             {
               label: 'Data Collection',
-              to: '/docs/data-collection/intro',
+              to: '/data-collection/intro',
             },
             {
               label: 'Data Cleaning',
-              to: '/docs/data-cleaning/intro',
+              to: '/data-cleaning/intro',
             },
           ],
         },
@@ -142,19 +142,19 @@ const config: Config = {
           items: [
             {
               label: 'Data Presentation',
-              to: '/docs/data-presentation/intro',
+              to: '/data-presentation/intro',
             },
             {
               label: 'Interactive Dashboard',
-              to: '/docs/data-presentation/dashboard',
+              to: '/data-presentation/dashboard',
             },
             {
               label: 'Skills Overview',
-              to: '/docs/data-presentation/skills-overview',
+              to: '/data-presentation/skills-overview',
             },
             {
               label: 'Limitations',
-              to: '/docs/conclusion/limitations',
+              to: '/conclusion/limitations',
             },
           ],
         },
@@ -184,7 +184,7 @@ const config: Config = {
             },
             {
               label: 'Python Implementation',
-              to: '/docs/data-collection/tools/',
+              to: '/data-collection/tools/',
             },
             {
               label: 'Interactive Demo',
