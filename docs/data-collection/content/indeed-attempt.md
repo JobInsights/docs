@@ -1,12 +1,11 @@
 ---
-sidebar_position: 2
 ---
 
-# Initial Stepstone Attempt: Learning from Failure
+# Initial Indeed Attempt: Learning from Failure
 
 ## Context
 
-Our project began with Stepstone.de, one of Germany's largest job platforms, as our primary data source. This platform offered comprehensive German job market data, making it an ideal starting point for our data science job market analysis.
+Our project began with Indeed.de, one of Germany's largest job platforms, as our primary data source. This platform offered comprehensive German job market data, making it an ideal starting point for our data science job market analysis.
 
 ## Technical Challenges Encountered
 
@@ -40,26 +39,27 @@ proxy_list = [
     # ... hundreds of proxies needed
 ]
 
-def get_random_proxy():
-    return random.choice(proxy_list)
+proxy_count = 0
+
+def get_next_proxy():
+    proxy_count = proxy_count+1
+    return proxy_list[i]
 ```
 
 **Issues**:
 
 - High cost: Quality proxies cost €1-2 per IP monthly
-- Management complexity: Rotating 100+ proxies programmatically
+- Free Proxies: Have high latency and are unreliable
 - Detection: Many proxies were already blacklisted
 
-### VPN Solutions
+### Possible Solutions
 
-- **Residential VPNs**: Attempted to mask IP origins
-- **Rotating services**: Automatic IP changes
-- **Geographic diversity**: German IP addresses for local access
+- **Residential Proxies / VPNs**: Attempted to mask IP origins
 
 **Issues**:
 
 - Cost prohibitive for academic project
-- Speed degradation with VPN overhead
+- Speed degradation due to overhead
 - Still detectable with advanced fingerprinting
 
 ### Selenium & Browser Automation
@@ -91,7 +91,7 @@ import undetected_chromedriver as uc
 
 # Zero-config setup that patches chromedriver automatically
 driver = uc.Chrome()
-driver.get('https://stepstone.de')
+driver.get('https://Indeed.de')
 ```
 
 **Progress Made**:
@@ -111,7 +111,7 @@ driver.get('https://stepstone.de')
 ### Cost-Benefit Analysis
 
 - **Proxy costs**: €100+ monthly for adequate coverage
-- **Development time**: Weeks to implement robust proxy rotation
+- **Development time**: Weeks to implement robust proxy rotation and status tracking
 - **Maintenance overhead**: Constant monitoring and proxy list updates
 
 ### Technical Complexity
@@ -124,7 +124,7 @@ driver.get('https://stepstone.de')
 
 - **Academic timeline**: Limited time for infrastructure development
 - **Resource limitations**: No budget for commercial proxy services
-- **Learning objectives**: Focus on data science, not cybersecurity
+- **Learning objectives**: Focus on data scraping, not bypassing existing protection
 
 ## Key Lessons Learned
 
@@ -145,12 +145,3 @@ driver.get('https://stepstone.de')
 1. **Ethical scraping**: Respect website terms and robots.txt
 2. **Legal compliance**: Data usage must comply with platform policies
 3. **Transparency**: Document all attempts and rationales
-
-## Pivot to Indeed
-
-These challenges led us to switch to Indeed.com, which offered:
-
-- No Cloudflare protection
-- Clean scraping environment
-- Comprehensive job data
-- Better automation tolerance

@@ -21,16 +21,18 @@ We have analyzed the contents of the clusters to determine their "Purity."
 
 ### Category: Technology & Hard Skills (Most Important for Analysis)
 
-| Cluster ID      | Dominant Theme                    | Error Rate (Est.) | Notes                                                                                                                          |
-| :-------------- | :-------------------------------- | :---------------- | :----------------------------------------------------------------------------------------------------------------------------- |
-| **cluster_56**  | **Coding Languages & Frameworks** | **~5%**           | **Gold standard.** Contains Python, Java, React, AWS, etc. Errors are minor (e.g., "clean code" is a concept, not a language). |
-| **cluster_67**  | **DevOps & CI/CD**                | **~2%**           | Very clean. Jenkins, Docker, Kubernetes, Git.                                                                                  |
-| **cluster_163** | **Databases**                     | **~0%**           | SQL, Oracle, MongoDB, Postgres. Extremely clean.                                                                               |
-| **cluster_107** | **Cloud & Infrastructure**        | **~5%**           | AWS, Google Cloud, Azure. Some overlap with general architecture terms.                                                        |
-| **cluster_109** | **Data Engineering Stack**        | **~10%**          | Kafka, Spark, Hadoop. Some noise with generic terms like "pipeline".                                                           |
-| **cluster_112** | **SAP Ecosystem**                 | **~2%**           | SAP HANA, ABAP, S/4HANA. Very specific.                                                                                        |
-| **cluster_189** | **Microsoft/Office Tools**        | **~0%**           | Excel, PowerPoint, Sharepoint, Azure.                                                                                          |
-| **cluster_57**  | **General Tools/Software**        | **~15%**          | Mixed bag of "AI tools", "BI tools", and generic "tools". Less specific than cluster_56.                                       |
+| Cluster ID      | Dominant Theme                          | Error Rate (Est.) | Notes                                                                                                                                                                                                                                                                                                               |
+| :-------------- | :-------------------------------------- | :---------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **cluster_56**  | **Coding Languages & Frameworks**       | **~5%**           | **Gold standard.** Contains Python, Java, React, AWS, etc. Errors are minor (e.g., "clean code" is a concept, not a language).                                                                                                                                                                                      |
+| **cluster_67**  | **DevOps & CI/CD**                      | **~2%**           | Very clean. Jenkins, Docker, Kubernetes, Git.                                                                                                                                                                                                                                                                       |
+| **cluster_163** | **Databases**                           | **~0%**           | SQL, Oracle, MongoDB, Postgres. Extremely clean.                                                                                                                                                                                                                                                                    |
+| **cluster_107** | **Cloud & Infrastructure**              | **~5%**           | AWS, Google Cloud, Azure. Some overlap with general architecture terms.                                                                                                                                                                                                                                             |
+| **cluster_109** | **Data Engineering Stack**              | **~10%**          | Kafka, Spark, Hadoop. Some noise with generic terms like "pipeline".                                                                                                                                                                                                                                                |
+| **cluster_112** | **SAP Ecosystem**                       | **~2%**           | SAP HANA, ABAP, S/4HANA. Very specific.                                                                                                                                                                                                                                                                             |
+| **cluster_189** | **Microsoft/Office Tools**              | **~0%**           | Excel, PowerPoint, Sharepoint, Azure.                                                                                                                                                                                                                                                                               |
+| **cluster_57**  | **General Tools/Software**              | **~15%**          | Mixed bag of "AI tools", "BI tools", and generic "tools". Less specific than cluster_56.                                                                                                                                                                                                                            |
+| **cluster_130** | **AI, Machine Learning & Data Science** | **~2%**           | **Very clean.** Contains numpy, pytorch, tensorflow, keras, scikit-learn, matlab, nlp, computer vision, deep learning, generative ai, large language models, reinforcement learning. Grouped items based on "Advanced Computation" and "AI". Separated from general web development (React, Angular) in cluster_56. |
+| **cluster_45**  | **Data Engineering & Infrastructure**   | **~5%**           | Contains pandas, big data, data lake, data warehouse, etl, spark (often implied), bigquery, databricks. Some generic terms like "data handling", but mostly solid technical terms.                                                                                                                                  |
 
 ### Category: Soft Skills & Personal Traits
 
@@ -105,51 +107,3 @@ Do not use these for keyword matching as they contain generic words, preposition
 - `cluster_227` (Generic words like "position", "place")
 - `cluster_86` (Generic fillers like "the", "der", "das")
 - `cluster_148` (Quantifiers like "a lot", "one")
-
-## Implementation Recommendations
-
-### Code Structure for Filtering
-
-```python
-# Example implementation for cluster filtering
-class ClusterFilter:
-    def __init__(self):
-        # Define super-categories based on cluster analysis
-        self.tech_stack_clusters = ['cluster_56', 'cluster_163', 'cluster_67']
-        self.secondary_tech = ['cluster_107', 'cluster_109', 'cluster_112']
-
-        self.soft_skills_clusters = ['cluster_134', 'cluster_171', 'cluster_53',
-                                   'cluster_8', 'cluster_193']
-
-        self.qualifications_clusters = ['cluster_98', 'cluster_226']
-
-    def get_tech_keywords(self, cluster_data):
-        """Extract technology-related keywords from primary clusters"""
-        tech_keywords = set()
-        for cluster_id in self.tech_stack_clusters:
-            if cluster_id in cluster_data:
-                tech_keywords.update(cluster_data[cluster_id]['keywords'])
-        return tech_keywords
-
-    def get_soft_skills_keywords(self, cluster_data):
-        """Extract soft skills keywords"""
-        soft_keywords = set()
-        for cluster_id in self.soft_skills_clusters:
-            if cluster_id in cluster_data:
-                soft_keywords.update(cluster_data[cluster_id]['keywords'])
-        return soft_keywords
-```
-
-### Quality Assurance Tips
-
-1. **Always validate cluster content** before using in analysis
-2. **Filter out high-noise clusters** from automated processing
-3. **Use confidence scores** when applying cluster-based filtering
-4. **Regularly audit** cluster quality as new data is added
-
-### Performance Considerations
-
-- **Pre-compute cluster mappings** for faster analysis
-- **Cache filtered results** to avoid repeated processing
-- **Use set operations** for efficient keyword matching
-- **Consider hierarchical filtering** (primary → secondary clusters)

@@ -13,21 +13,25 @@ Our dashboard was built using Next.js to create a modern, interactive web applic
 ### Technical Rationale
 
 **Already Experienced with the Framework:**
+
 - Team had existing React/Next.js knowledge from previous projects
 - Familiar component architecture and state management patterns
 - Established development workflow and tooling
 
 **Flexible for Fullstack Applications:**
+
 - Built-in API routes for serverless backend functionality
 - Seamless integration between frontend and backend code
 - Support for both static generation and server-side rendering
 
 **Industry Standard for Fullstack Web Applications:**
+
 - Widely adopted in production environments
 - Large ecosystem of libraries and tools
 - Strong community support and documentation
 
 **Needed Publicly Viewable Deployment:**
+
 - Vercel integration for easy deployment
 - Global CDN for fast worldwide access
 - Automatic scaling and reliability
@@ -70,10 +74,10 @@ job-market-dashboard/
 
 ```tsx
 // pages/jobs/index.tsx
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import JobCard from '../../components/JobCard';
-import FilterPanel from '../../components/FilterPanel';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import JobCard from "../../components/JobCard";
+import FilterPanel from "../../components/FilterPanel";
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState([]);
@@ -93,7 +97,7 @@ export default function JobsPage() {
       const data = await response.json();
       setJobs(data.jobs);
     } catch (error) {
-      console.error('Failed to fetch jobs:', error);
+      console.error("Failed to fetch jobs:", error);
     } finally {
       setLoading(false);
     }
@@ -114,7 +118,7 @@ export default function JobsPage() {
           <div className="loading">Loading jobs...</div>
         ) : (
           <div className="jobs-grid">
-            {jobs.map(job => (
+            {jobs.map((job) => (
               <JobCard
                 key={job.id}
                 job={job}
@@ -133,56 +137,100 @@ export default function JobsPage() {
 
 ```typescript
 // pages/api/jobs.ts
-import { NextApiRequest, NextApiResponse } from 'next';
-import { getJobsWithFilters } from '../../lib/database';
+import { NextApiRequest, NextApiResponse } from "next";
+import { getJobsWithFilters, JobFilters } from "../../lib/database";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
     const {
       skills,
-      minSalary,
-      maxSalary,
-      city,
-      cluster,
-      employmentType,
+      workArrangement,
+      location,
+      industry,
       page = 1,
-      limit = 20
+      limit = 20,
     } = req.query;
 
-    // Build filter object
-    const filters = {
+    // Build filter object using Prisma-compatible filters
+    const filters: JobFilters = {
       skills: skills ? (Array.isArray(skills) ? skills : [skills]) : undefined,
-      salaryRange: minSalary || maxSalary ? {
-        min: minSalary ? parseFloat(minSalary) : undefined,
-        max: maxSalary ? parseFloat(maxSalary) : undefined
-      } : undefined,
-      city: city as string,
-      cluster: cluster ? parseInt(cluster) : undefined,
-      employmentType: employmentType as string,
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit)
-      }
+      workArrangement: workArrangement as string,
+      location: location as string,
+      industry: industry as string,
+      limit: Math.min(parseInt(limit as string) || 20, 100), // Max 100 per page
+      offset:
+        ((parseInt(page as string) || 1) - 1) *
+        (parseInt(limit as string) || 20),
     };
 
     const jobs = await getJobsWithFilters(filters);
 
+    // Get total count for pagination
+    const { prisma } = await import("../../lib/database");
+    const totalJobs = await prisma.job.count({
+      where: filters.skills
+        ? {
+            tags: {
+              some: {
+                tag: {
+                  name: { in: filters.skills },
+                },
+              },
+            },
+          }
+        : {},
+    });
+
     res.status(200).json({
       jobs,
       pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        total: jobs.length // In real implementation, get from database
-      }
+        page: parseInt(page as string) || 1,
+        limit: filters.limit,
+        total: totalJobs,
+        totalPages: Math.ceil(totalJobs / filters.limit!),
+      },
     });
-
   } catch (error) {
-    console.error('API error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("API error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+// pages/api/jobs/[id].ts - Individual job details
+import { getJobById } from "../../lib/database";
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  try {
+    const { id } = req.query;
+
+    if (!id || typeof id !== "string") {
+      return res.status(400).json({ error: "Job ID is required" });
+    }
+
+    const job = await getJobById(id);
+
+    if (!job) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+
+    res.status(200).json({ job });
+  } catch (error) {
+    console.error("API error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 ```
@@ -191,134 +239,143 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 ```typescript
 // lib/database.ts
-import { Pool } from 'pg';
+import { PrismaClient, Job, Tag } from "@prisma/client";
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production'
+const prisma = new PrismaClient({
+  log: process.env.NODE_ENV === "development" ? ["query", "error"] : ["error"],
 });
 
-export async function getJobsWithFilters(filters: any) {
-  let query = `
-    SELECT
-      j.*,
-      ARRAY_AGG(k.keyword) as skills,
-      COUNT(jk.keyword_id) as matching_skills
-    FROM jobs j
-    LEFT JOIN job_keywords jk ON j.job_id = jk.job_id
-    LEFT JOIN keywords k ON jk.keyword_id = k.keyword_id
-  `;
+export interface JobFilters {
+  skills?: string[];
+  workArrangement?: string;
+  location?: string;
+  industry?: string;
+  limit?: number;
+  offset?: number;
+}
 
-  const conditions = [];
-  const values = [];
-  let paramCount = 1;
+export async function getJobsWithFilters(filters: JobFilters): Promise<Job[]> {
+  const {
+    skills,
+    workArrangement,
+    location,
+    industry,
+    limit = 20,
+    offset = 0,
+  } = filters;
 
-  // Skills filter
-  if (filters.skills && filters.skills.length > 0) {
-    const skillPlaceholders = filters.skills.map(() => `$${paramCount++}`).join(',');
-    conditions.push(`k.keyword IN (${skillPlaceholders})`);
-    values.push(...filters.skills);
+  const whereConditions: any = {};
+
+  // Skills filter using tag relationships
+  if (skills && skills.length > 0) {
+    whereConditions.tags = {
+      some: {
+        tag: {
+          name: { in: skills },
+        },
+      },
+    };
   }
 
-  // Salary filter
-  if (filters.salaryRange) {
-    if (filters.salaryRange.min) {
-      conditions.push(`j.salary_avg >= $${paramCount++}`);
-      values.push(filters.salaryRange.min);
-    }
-    if (filters.salaryRange.max) {
-      conditions.push(`j.salary_avg <= $${paramCount++}`);
-      values.push(filters.salaryRange.max);
-    }
+  // Work arrangement filter
+  if (workArrangement) {
+    whereConditions.workArrangement = workArrangement;
   }
 
   // Location filter
-  if (filters.city) {
-    conditions.push(`j.city = $${paramCount++}`);
-    values.push(filters.city);
+  if (location) {
+    whereConditions.location = { contains: location };
   }
 
-  // Cluster filter
-  if (filters.cluster !== undefined) {
-    conditions.push(`j.cluster_id = $${paramCount++}`);
-    values.push(filters.cluster);
+  // Industry filter
+  if (industry) {
+    whereConditions.industry = industry;
   }
 
-  // Employment type filter
-  if (filters.employmentType) {
-    conditions.push(`j.employment_type = $${paramCount++}`);
-    values.push(filters.employmentType);
-  }
-
-  if (conditions.length > 0) {
-    query += ' WHERE ' + conditions.join(' AND ');
-  }
-
-  query += `
-    GROUP BY j.job_id
-    ORDER BY j.posted_date DESC
-  `;
-
-  // Pagination
-  if (filters.pagination) {
-    const { page, limit } = filters.pagination;
-    const offset = (page - 1) * limit;
-    query += ` LIMIT $${paramCount++} OFFSET $${paramCount++}`;
-    values.push(limit, offset);
-  }
-
-  const result = await pool.query(query, values);
-  return result.rows;
+  return await prisma.job.findMany({
+    where: whereConditions,
+    include: {
+      tags: {
+        include: {
+          tag: true,
+        },
+      },
+    },
+    orderBy: [
+      // Prioritize jobs with more matching skills
+      skills ? { tags: { _count: "desc" } } : {},
+      { datePosted: "desc" },
+    ].filter((condition) => Object.keys(condition).length > 0),
+    take: limit,
+    skip: offset,
+  });
 }
 
 export async function getMarketInsights() {
-  const insightsQuery = `
-    SELECT
-      'top_skills' as type,
-      json_agg(
-        json_build_object(
-          'skill', keyword,
-          'count', job_count,
-          'avg_salary', avg_salary
-        ) ORDER BY job_count DESC LIMIT 10
-      ) as data
-    FROM (
-      SELECT
-        k.keyword,
-        COUNT(DISTINCT j.job_id) as job_count,
-        AVG(j.salary_avg) as avg_salary
-      FROM keywords k
-      JOIN job_keywords jk ON k.keyword_id = jk.keyword_id
-      JOIN jobs j ON jk.job_id = j.job_id
-      GROUP BY k.keyword
-      HAVING COUNT(DISTINCT j.job_id) > 5
-    ) skill_stats
+  // Top skills by demand
+  const topSkills = await prisma.tag.findMany({
+    include: {
+      _count: {
+        select: { jobs: true },
+      },
+    },
+    orderBy: {
+      jobs: { _count: "desc" },
+    },
+    take: 10,
+  });
 
-    UNION ALL
+  // Work arrangement distribution
+  const workArrangementStats = await prisma.job.groupBy({
+    by: ["workArrangement"],
+    _count: { id: true },
+    orderBy: { _count: { id: "desc" } },
+  });
 
-    SELECT
-      'salary_clusters' as type,
-      json_agg(
-        json_build_object(
-          'cluster', cluster_id,
-          'count', job_count,
-          'avg_salary', avg_salary
-        ) ORDER BY cluster_id
-      ) as data
-    FROM (
-      SELECT
-        cluster_id,
-        COUNT(*) as job_count,
-        AVG(salary_avg) as avg_salary
-      FROM jobs
-      WHERE salary_avg IS NOT NULL
-      GROUP BY cluster_id
-    ) cluster_stats
-  `;
+  // Location distribution (top cities)
+  const locationStats = await prisma.job.groupBy({
+    by: ["location"],
+    _count: { id: true },
+    orderBy: { _count: { id: "desc" } },
+    take: 10,
+  });
 
-  const result = await pool.query(insightsQuery);
-  return result.rows;
+  // Industry distribution
+  const industryStats = await prisma.job.groupBy({
+    by: ["industry"],
+    _count: { id: true },
+    where: { industry: { not: null } },
+    orderBy: { _count: { id: "desc" } },
+    take: 10,
+  });
+
+  return {
+    topSkills: topSkills.map((skill) => ({
+      name: skill.name,
+      category: skill.category,
+      group: skill.group,
+      jobCount: skill._count.jobs,
+    })),
+    workArrangementStats,
+    locationStats,
+    industryStats,
+  };
 }
+
+export async function getJobById(id: string): Promise<Job | null> {
+  return await prisma.job.findUnique({
+    where: { id },
+    include: {
+      tags: {
+        include: {
+          tag: true,
+        },
+      },
+    },
+  });
+}
+
+export { prisma };
 ```
 
 ## Dashboard Components
@@ -327,36 +384,50 @@ export async function getMarketInsights() {
 
 ```tsx
 // components/JobCard.tsx
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
+import { Job, Tag } from "@prisma/client";
 
-interface Job {
-  id: number;
-  title: string;
-  company: string;
-  location: string;
-  salary_avg: number;
-  skills: string[];
-  posted_date: string;
+interface JobWithTags extends Job {
+  tags: Array<{
+    tag: Tag;
+  }>;
 }
 
 interface JobCardProps {
-  job: Job;
+  job: JobWithTags;
   onClick?: () => void;
 }
 
 export default function JobCard({ job, onClick }: JobCardProps) {
-  const formatSalary = (salary: number) => {
-    if (!salary) return 'Not specified';
-    return `€${salary.toLocaleString()}`;
+  const formatSalary = (salary: string | null) => {
+    if (!salary) return "Not specified";
+    return salary;
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric'
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
     });
+  };
+
+  const getSkills = () => {
+    return job.tags.map((jt) => jt.tag.name);
+  };
+
+  const getWorkArrangementIcon = (arrangement: string) => {
+    switch (arrangement.toLowerCase()) {
+      case "vollzeit":
+        return "⏰";
+      case "teilzeit":
+        return "🕐";
+      case "befristet":
+        return "📅";
+      default:
+        return "💼";
+    }
   };
 
   return (
@@ -368,19 +439,41 @@ export default function JobCard({ job, onClick }: JobCardProps) {
 
       <div className="job-details">
         <div className="job-location">📍 {job.location}</div>
-        <div className="job-salary">💰 {formatSalary(job.salary_avg)}</div>
-        <div className="job-date">📅 {formatDate(job.posted_date)}</div>
+        <div className="job-type">
+          {getWorkArrangementIcon(job.workArrangement)} {job.workArrangement}
+        </div>
+        <div className="job-salary">💰 {formatSalary(job.salary)}</div>
+        <div className="job-date">📅 {formatDate(job.datePosted)}</div>
       </div>
 
-      {job.skills && job.skills.length > 0 && (
+      {job.industry && <div className="job-industry">🏢 {job.industry}</div>}
+
+      <div className="job-flags">
+        {job.isFullHomeOffice && (
+          <span className="flag home-office">🏠 Home Office</span>
+        )}
+        {job.isPartialHomeOffice && (
+          <span className="flag partial-home">🏠/🏢 Hybrid</span>
+        )}
+        {job.noExperience && (
+          <span className="flag entry-level">🎓 Entry Level</span>
+        )}
+        {job.isManagement && (
+          <span className="flag management">👔 Management</span>
+        )}
+      </div>
+
+      {getSkills().length > 0 && (
         <div className="job-skills">
-          {job.skills.slice(0, 3).map((skill, index) => (
-            <span key={index} className="skill-tag">
-              {skill}
-            </span>
-          ))}
-          {job.skills.length > 3 && (
-            <span className="skill-more">+{job.skills.length - 3} more</span>
+          {getSkills()
+            .slice(0, 4)
+            .map((skill, index) => (
+              <span key={index} className="skill-tag">
+                {skill}
+              </span>
+            ))}
+          {getSkills().length > 4 && (
+            <span className="skill-more">+{getSkills().length - 4} more</span>
           )}
         </div>
       )}
@@ -399,7 +492,7 @@ export default function JobCard({ job, onClick }: JobCardProps) {
 
 ```typescript
 // lib/cache.ts
-import NodeCache from 'node-cache';
+import NodeCache from "node-cache";
 
 // Cache for 10 minutes
 const cache = new NodeCache({ stdTTL: 600 });
@@ -410,15 +503,18 @@ export function getCachedData(key: string, fetchFunction: () => Promise<any>) {
     return Promise.resolve(cached);
   }
 
-  return fetchFunction().then(data => {
+  return fetchFunction().then((data) => {
     cache.set(key, data);
     return data;
   });
 }
 
 // API route with caching
-export default async function insightsHandler(req: NextApiRequest, res: NextApiResponse) {
-  const cacheKey = 'market_insights';
+export default async function insightsHandler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const cacheKey = "market_insights";
 
   try {
     const insights = await getCachedData(cacheKey, async () => {
@@ -427,7 +523,7 @@ export default async function insightsHandler(req: NextApiRequest, res: NextApiR
 
     res.status(200).json(insights);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch insights' });
+    res.status(500).json({ error: "Failed to fetch insights" });
   }
 }
 ```
@@ -455,8 +551,11 @@ export default async function insightsHandler(req: NextApiRequest, res: NextApiR
 
 ```bash
 # .env.local
-DATABASE_URL=postgresql://user:password@host:port/database
+DATABASE_URL="file:./jobs_data.db"
 NEXT_PUBLIC_APP_URL=https://job-market-insights.vercel.app
+
+# For production deployment (optional - can use PostgreSQL)
+# DATABASE_URL="postgresql://user:password@host:port/database"
 ```
 
 ## User Experience Features
@@ -470,14 +569,14 @@ NEXT_PUBLIC_APP_URL=https://job-market-insights.vercel.app
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
 }
 
 .job-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .jobs-grid {
@@ -497,12 +596,14 @@ NEXT_PUBLIC_APP_URL=https://job-market-insights.vercel.app
 ## Results and Impact
 
 ### Dashboard Performance
+
 - **Load time**: &lt;2 seconds for initial page load
 - **Search response**: &lt;500ms for filtered results
 - **Concurrent users**: Support for 100+ simultaneous users
 - **Mobile compatibility**: Fully responsive across devices
 
 ### User Engagement
+
 - **Job discovery**: Users can filter through 6,200+ positions
 - **Skill insights**: Interactive exploration of market demands
 - **Career guidance**: Data-driven decision support for job seekers

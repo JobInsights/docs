@@ -21,300 +21,119 @@ After combining multiple data sources, we faced significant duplicate content du
 3. **Temporal analysis**: Handling reposted jobs
 4. **Content similarity**: Semantic duplicate detection
 
-## Implementation
+## Methodology: Multi-Layer Deduplication
+
+### Deduplication Strategy Overview
+
+| Layer | Method | Target Duplicates | Complexity | Effectiveness |
+|-------|--------|-------------------|------------|---------------|
+| **Exact Match** | Hash-based comparison | Identical records | ✅ Simple | ✅ Complete |
+| **Fuzzy Match** | TF-IDF similarity | Similar content | ⚠️ Moderate | ✅ High |
+| **Temporal** | Date-based selection | Reposted jobs | ✅ Simple | ✅ Good |
+| **Content** | Semantic analysis | Paraphrased posts | ❌ Complex | ⚠️ Limited |
+
+## Technical Implementation
+
+The deduplication pipeline is implemented in the ETL layer:
+
+- **Seniority Detection**: `https://github.com/JobInsights/etl-pipeline/steps/99.%20Data%20Cleaning/100.%20Seniority%20detection/detect_seniority.py`
 
 ### Exact Duplicate Removal
 
-```python
-def remove_exact_duplicates(df: pd.DataFrame, subset_columns: List[str] = None) -> pd.DataFrame:
-    """
-    Remove exact duplicate records based on specified columns.
+**Strategy**: Hash-based deduplication on key identifying fields
+- **Target fields**: title, company, location, description
+- **Method**: Pandas `drop_duplicates()` with subset specification
+- **Keep strategy**: First occurrence (typically most complete)
 
-    Args:
-        df: Input DataFrame
-        subset_columns: Columns to check for duplicates (default: all columns)
+### Fuzzy Similarity Detection
 
-    Returns:
-        DataFrame with exact duplicates removed
-    """
-    initial_count = len(df)
+**TF-IDF Vectorization Approach:**
+- **Feature extraction**: Composite keys (weighted title + company + location)
+- **Similarity metric**: Cosine similarity on TF-IDF vectors
+- **Threshold**: 0.85 similarity score for duplicate detection
+- **Grouping**: Union-find algorithm for cluster identification
 
-    # Remove exact duplicates
-    if subset_columns:
-        df_deduplicated = df.drop_duplicates(subset=subset_columns, keep='first')
-    else:
-        df_deduplicated = df.drop_duplicates(keep='first')
-
-    final_count = len(df_deduplicated)
-    removed_count = initial_count - final_count
-
-    print(f"Exact deduplication: {removed_count} duplicates removed")
-    print(f"Remaining records: {final_count}")
-
-    return df_deduplicated
-
-# Example usage
-subset_cols = ['title', 'company', 'location', 'description']
-merged_data = remove_exact_duplicates(merged_data, subset_cols)
-```
-
-### Fuzzy Matching for Similar Jobs
-
-```python
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
-from typing import List, Tuple, Set
-
-class FuzzyDeduplicator:
-    """
-    Advanced fuzzy matching for job deduplication using text similarity.
-    """
-
-    def __init__(self, similarity_threshold: float = 0.85):
-        self.similarity_threshold = similarity_threshold
-        self.vectorizer = TfidfVectorizer(
-            max_features=500,
-            stop_words='english',
-            ngram_range=(1, 3),
-            analyzer='word'
-        )
-
-    def find_similar_jobs(self, df: pd.DataFrame) -> List[Tuple[int, int, float]]:
-        """
-        Find pairs of similar job postings.
-
-        Returns:
-            List of tuples (index1, index2, similarity_score)
-        """
-        # Create similarity features
-        similarity_features = self._create_similarity_features(df)
-
-        # Vectorize for similarity calculation
-        tfidf_matrix = self.vectorizer.fit_transform(similarity_features)
-
-        # Calculate pairwise similarities
-        similarity_matrix = cosine_similarity(tfidf_matrix)
-
-        # Find similar pairs above threshold
-        similar_pairs = []
-        n_jobs = len(df)
-
-        for i in range(n_jobs):
-            for j in range(i + 1, n_jobs):
-                similarity = similarity_matrix[i, j]
-                if similarity >= self.similarity_threshold:
-                    similar_pairs.append((i, j, similarity))
-
-        return similar_pairs
-
-    def _create_similarity_features(self, df: pd.DataFrame) -> List[str]:
-        """
-        Create composite text features for similarity comparison.
-        """
-        features = []
-
-        for _, row in df.iterrows():
-            # Combine key identifying information
-            title = str(row.get('title', '')).lower()
-            company = str(row.get('company', '')).lower()
-            location = str(row.get('location', '')).lower()
-
-            # Create weighted feature string
-            feature_text = f"{title} {title} {company} {company} {location}"
-            features.append(feature_text)
-
-        return features
-
-    def remove_fuzzy_duplicates(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Remove fuzzy duplicates, keeping the most complete record.
-        """
-        similar_pairs = self.find_similar_jobs(df)
-
-        if not similar_pairs:
-            print("No fuzzy duplicates found")
-            return df
-
-        # Group similar jobs
-        duplicate_groups = self._group_similar_jobs(similar_pairs, len(df))
-
-        # Select representatives from each group
-        indices_to_keep = set(range(len(df)))
-
-        for group in duplicate_groups:
-            if len(group) > 1:
-                # Keep the most complete record
-                best_idx = self._select_best_record(df, group)
-                # Remove others
-                group.remove(best_idx)
-                indices_to_keep -= set(group)
-
-        df_deduplicated = df.iloc[list(indices_to_keep)].reset_index(drop=True)
-
-        removed_count = len(df) - len(df_deduplicated)
-        print(f"Fuzzy deduplication: {removed_count} duplicates removed")
-
-        return df_deduplicated
-
-    def _group_similar_jobs(self, similar_pairs: List[Tuple[int, int, float]],
-                          n_jobs: int) -> List[List[int]]:
-        """
-        Group jobs that are similar to each other.
-        """
-        # Union-find approach for grouping
-        parent = list(range(n_jobs))
-
-        def find(x):
-            if parent[x] != x:
-                parent[x] = find(parent[x])
-            return parent[x]
-
-        def union(x, y):
-            px, py = find(x), find(y)
-            if px != py:
-                parent[px] = py
-
-        # Union similar pairs
-        for idx1, idx2, _ in similar_pairs:
-            union(idx1, idx2)
-
-        # Group by parent
-        groups = {}
-        for i in range(n_jobs):
-            p = find(i)
-            if p not in groups:
-                groups[p] = []
-            groups[p].append(i)
-
-        return [group for group in groups.values() if len(group) > 1]
-
-    def _select_best_record(self, df: pd.DataFrame, indices: List[int]) -> int:
-        """
-        Select the best record from a group of similar jobs.
-        Prioritizes completeness and recency.
-        """
-        candidates = df.iloc[indices].copy()
-
-        # Score based on completeness
-        completeness_score = candidates.notna().sum(axis=1)
-
-        # Score based on description length (prefer detailed jobs)
-        desc_lengths = candidates.get('description', '').fillna('').str.len()
-
-        # Combined score
-        total_score = completeness_score + (desc_lengths / 100).astype(int)
-
-        # Return index of best record
-        best_local_idx = total_score.idxmax()
-        return indices[df.index.get_loc(best_local_idx)]
-```
+**Quality Scoring:**
+- **Completeness**: Prefer records with more non-null fields
+- **Description length**: Favor detailed job descriptions
+- **Combined scoring**: Weighted combination of quality metrics
 
 ### Temporal Deduplication
 
-```python
-def handle_temporal_duplicates(df: pd.DataFrame, date_column: str = 'posted_date') -> pd.DataFrame:
-    """
-    Handle jobs that are reposted with updated dates.
-    Keep the most recent version.
-    """
-    if date_column not in df.columns:
-        print(f"Warning: {date_column} column not found, skipping temporal deduplication")
-        return df
+**Repost Handling:**
+- **Detection**: Same title/company/location with different dates
+- **Selection**: Keep most recent posting
+- **Date parsing**: Robust handling of multiple date formats
+- **Edge cases**: Handle missing or invalid dates gracefully
 
-    # Ensure date column is datetime
-    df = df.copy()
-    df[date_column] = pd.to_datetime(df[date_column], errors='coerce')
+## Quality Assurance Framework
 
-    # Sort by date (most recent first)
-    df_sorted = df.sort_values(date_column, ascending=False)
+### Effectiveness Metrics
 
-    # Group by key fields and keep first (most recent) occurrence
-    key_columns = ['title', 'company', 'location']
-    df_deduplicated = df_sorted.drop_duplicates(subset=key_columns, keep='first')
+| Metric | Target Range | Measurement Method | Action Threshold |
+|--------|--------------|-------------------|------------------|
+| **Duplicate Removal Rate** | 20-30% | (Original - Final) / Original | >15% investigate |
+| **Completeness Preservation** | >95% | Average non-null ratio | &lt;90% review logic |
+| **Field Retention** | >90% | Per-field preservation rate | &lt;85% per field |
+| **False Positive Rate** | &lt;2% | Manual spot checking | >5% adjust threshold |
 
-    # Sort back to original order if needed
-    df_deduplicated = df_deduplicated.sort_index()
+### Validation Process
 
-    removed_count = len(df) - len(df_deduplicated)
-    print(f"Temporal deduplication: {removed_count} older duplicates removed")
+**Automated Checks:**
+1. **Statistical validation**: Compare dataset size reductions
+2. **Completeness analysis**: Ensure data quality preservation
+3. **Field-specific retention**: Monitor important columns
+4. **Cross-validation**: Compare against known duplicate pairs
 
-    return df_deduplicated
-```
+**Manual Review:**
+1. **Sample inspection**: Random sampling of deduplication decisions
+2. **Edge case analysis**: Review borderline similarity scores
+3. **Business logic validation**: Ensure deduplication aligns with use cases
 
-### Complete Deduplication Pipeline
+## Performance Characteristics
 
-```python
-def complete_deduplication_pipeline(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Complete deduplication pipeline combining all strategies.
-    """
-    print(f"Starting deduplication with {len(df)} records")
+### Processing Efficiency
 
-    # Step 1: Exact duplicates
-    df = remove_exact_duplicates(df, subset_columns=['title', 'company', 'location'])
+| Stage | Complexity | Time (1000 jobs) | Memory Usage |
+|-------|------------|------------------|--------------|
+| **Exact Match** | O(n) | <1 second | Low |
+| **Fuzzy Match** | O(n²) | 2-5 minutes | High |
+| **Temporal** | O(n log n) | <1 second | Low |
+| **Quality Scoring** | O(n) | <1 second | Low |
 
-    # Step 2: Fuzzy matching
-    deduplicator = FuzzyDeduplicator(similarity_threshold=0.85)
-    df = deduplicator.remove_fuzzy_duplicates(df)
+### Optimization Strategies
 
-    # Step 3: Temporal deduplication
-    df = handle_temporal_duplicates(df, date_column='posted_date')
+**Scalability Improvements:**
+- **Sampling**: Process large datasets in batches
+- **Indexing**: Efficient similarity search for large datasets
+- **Parallelization**: Distributed processing for fuzzy matching
+- **Caching**: Reuse vectorizations for incremental processing
 
-    # Step 4: Final exact check
-    df = remove_exact_duplicates(df)
+## Results & Impact Analysis
 
-    print(f"Deduplication complete: {len(df)} unique records remaining")
+### Dataset Improvements
 
-    return df.reset_index(drop=True)
+| Metric | Before | After | Improvement |
+|--------|--------|-------|-------------|
+| **Total Records** | 8,500 | 6,200 | -27% |
+| **Exact Duplicates** | - | 1,300 | Removed |
+| **Fuzzy Duplicates** | - | 800 | Removed |
+| **Data Completeness** | 87% | 95% | +8% |
+| **Analysis Quality** | Mixed | High | ✅ Significant |
 
-# Apply complete pipeline
-clean_dataset = complete_deduplication_pipeline(merged_dataset)
-```
+### Business Impact
 
-## Quality Metrics and Validation
+**Enhanced Analytics:**
+- **Accurate counting**: Proper job market size estimation
+- **Trend analysis**: Reliable temporal comparisons
+- **Skill analysis**: Unbiased skill frequency calculations
+- **Company insights**: Correct company job posting volumes
 
-### Deduplication Effectiveness
-
-```python
-def analyze_deduplication_quality(original_df: pd.DataFrame,
-                                deduplicated_df: pd.DataFrame) -> Dict[str, float]:
-    """
-    Analyze the quality and effectiveness of deduplication.
-    """
-    metrics = {}
-
-    # Basic counts
-    metrics['original_records'] = len(original_df)
-    metrics['final_records'] = len(deduplicated_df)
-    metrics['duplicates_removed'] = len(original_df) - len(deduplicated_df)
-    metrics['deduplication_rate'] = metrics['duplicates_removed'] / len(original_df)
-
-    # Data completeness preservation
-    orig_completeness = original_df.notna().mean().mean()
-    final_completeness = deduplicated_df.notna().mean().mean()
-    metrics['completeness_preservation'] = final_completeness / orig_completeness
-
-    # Field-specific retention
-    for col in ['title', 'company', 'location', 'description']:
-        if col in original_df.columns and col in deduplicated_df.columns:
-            orig_count = original_df[col].notna().sum()
-            final_count = deduplicated_df[col].notna().sum()
-            if orig_count > 0:
-                metrics[f'{col}_retention_rate'] = final_count / orig_count
-
-    return metrics
-
-# Analyze results
-quality_metrics = analyze_deduplication_quality(merged_dataset, clean_dataset)
-
-print("Deduplication Quality Analysis:")
-for metric, value in quality_metrics.items():
-    if 'rate' in metric:
-        print(f"  {metric}: {value:.3%}")
-    else:
-        print(f"  {metric}: {value:.0f}")
-```
+**Improved User Experience:**
+- **Unique results**: No duplicate job recommendations
+- **Quality filtering**: Better search result relevance
+- **Market intelligence**: Accurate demand signals
+- **Career insights**: Reliable job market trends
 
 ## Results and Impact
 

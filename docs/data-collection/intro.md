@@ -67,8 +67,8 @@ This multi-faceted approach ensured both data quantity and quality while demonst
 
 ## Navigation
 
-- **[Stepstone Attempt](./stepstone-attempt)**: Initial challenges and lessons learned
-- **[Indeed Scraping](./indeed-scraping)**: Platform selection and scraping strategy
-- **[Instant Data Scraper](./instant-data-scraper)**: Fast bulk data collection
-- **[WebScraper.io](./webscraper-io)**: Detailed job description scraping
+- **[StepStone Scraping](./content/stepstone-scraping)**: Platform selection and successful scraping strategy
+- **[Indeed Attempt](./content/indeed-attempt)**: Platform selection challenges and learning from failure
+- **[Instant Data Scraper](./tools/instant-data-scraper)**: Fast bulk data collection
+- **[WebScraper.io](./tools/webscraper-io)**: Detailed job description scraping
 

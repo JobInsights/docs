@@ -35,24 +35,53 @@ const sidebars: SidebarsConfig = {
           label: 'Overview'
         },
         {
-          type: 'doc',
-          id: 'data-collection/stepstone-attempt',
-          label: 'Stepstone Attempt'
+          type: 'category',
+          label: 'Platform Analysis',
+          collapsed: true,
+          items: [
+            {
+              type: 'doc',
+              id: 'data-collection/content/index',
+              label: 'Platform Selection & Analysis'
+            },
+            {
+              type: 'doc',
+              id: 'data-collection/content/indeed-attempt',
+              label: 'Indeed Attempt'
+            },
+            {
+              type: 'doc',
+              id: 'data-collection/content/stepstone-scraping',
+              label: 'StepStone Scraping'
+            }
+          ]
         },
         {
-          type: 'doc',
-          id: 'data-collection/indeed-scraping',
-          label: 'Indeed Scraping'
-        },
-        {
-          type: 'doc',
-          id: 'data-collection/instant-data-scraper',
-          label: 'Instant Data Scraper'
-        },
-        {
-          type: 'doc',
-          id: 'data-collection/webscraper-io',
-          label: 'WebScraper.io'
+          type: 'category',
+          label: 'Tools Overview',
+          collapsed: true,
+          items: [
+            {
+              type: 'doc',
+              id: 'data-collection/tools/index',
+              label: 'Tool Selection & Strategy'
+            },
+            {
+              type: 'doc',
+              id: 'data-collection/tools/instant-data-scraper',
+              label: 'Instant Data Scraper'
+            },
+            {
+              type: 'doc',
+              id: 'data-collection/tools/webscraper-io',
+              label: 'WebScraper.io'
+            },
+            {
+              type: 'doc',
+              id: 'data-collection/tools/python-scraping',
+              label: 'Python Scraping'
+            }
+          ]
         }
       ]
     },
@@ -80,6 +109,11 @@ const sidebars: SidebarsConfig = {
           type: 'doc',
           id: 'data-cleaning/data-cleanup',
           label: 'Data Cleanup'
+        },
+        {
+          type: 'doc',
+          id: 'data-cleaning/data-inconsistencies',
+          label: 'Data Inconsistencies'
         }
       ]
     },
@@ -105,13 +139,13 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'doc',
-          id: 'data-analysis/keyword-tagging',
-          label: 'Keyword Tagging'
+          id: 'data-analysis/cluster-analysis',
+          label: 'Cluster Analysis'
         },
         {
           type: 'doc',
-          id: 'data-analysis/cluster-analysis',
-          label: 'Cluster Analysis & Recommendations'
+          id: 'data-analysis/keyword-tagging',
+          label: 'Keyword Tagging'
         }
       ]
     },

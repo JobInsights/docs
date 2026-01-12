@@ -3,11 +3,11 @@ sidebar_position: 1
 sidebar_label: Overview
 ---
 
-# Data Cleaning: From Raw Scrapes to Analysis-Ready Data
+# Data Cleaning: From Raw Scrapes to Clean Data
 
 ## Phase Overview
 
-The data cleaning phase transformed our raw scraped data into a structured, analysis-ready dataset. This critical preprocessing step addressed the challenges of combining multiple data sources, removing duplicates, and preparing text for advanced machine learning analysis.
+The data cleaning phase transformed our raw scraped data into a clean, consistent dataset by removing duplicates, standardizing formats, and ensuring data quality. This foundational preprocessing step prepared the data for subsequent analysis and pattern discovery.
 
 ## Input Data Challenges
 
@@ -33,16 +33,14 @@ The data cleaning phase transformed our raw scraped data into a structured, anal
 graph TD
     A[Raw Scraped Data] --> B[Data Integration]
     B --> C[Deduplication]
-    C --> D[Data Cleaning]
-    D --> E[Text Preprocessing]
-    E --> F[Embedding Generation]
-    F --> G[Clustering Analysis]
-    G --> H[Keyword Extraction]
-    H --> I[Database Storage]
+    C --> D[Data Validation]
+    D --> E[Format Standardization]
+    E --> F[Text Preprocessing]
+    F --> G[Quality Assurance]
+    G --> H[Clean Dataset]
 
     style B fill:#e3f2fd
-    style F fill:#f3e5f5
-    style I fill:#e8f5e8
+    style H fill:#e8f5e8
 ```
 
 ## Processing Stages
@@ -57,30 +55,17 @@ graph TD
 - **Content comparison**: Fuzzy matching on job titles and descriptions
 - **Temporal handling**: Manage reposted jobs with updated dates
 
-### 3. Data Cleaning
+### 3. Data Cleaning & Validation
 - **Missing value handling**: Imputation strategies for incomplete data
 - **Format standardization**: Normalize dates, salaries, locations
 - **Outlier detection**: Identify and handle anomalous data points
+- **Data validation**: Ensure consistency and accuracy
 
 ### 4. Text Preprocessing
 - **HTML cleaning**: Remove markup and formatting artifacts
 - **Text normalization**: Standardize case, remove special characters
 - **Language processing**: Handle multilingual content appropriately
-
-### 5. Feature Engineering
-- **Embedding generation**: Convert text to 725-dimensional vectors
-- **Metadata extraction**: Derive additional features from existing data
-- **Categorical encoding**: Prepare categorical variables for analysis
-
-### 6. Clustering & Analysis
-- **K-means clustering**: Group similar job descriptions
-- **Cluster validation**: Evaluate clustering quality and interpretability
-- **Keyword extraction**: Identify representative terms for each cluster
-
-### 7. Database Integration
-- **Schema design**: Create optimized database structure
-- **Data relationships**: Establish connections between jobs, clusters, keywords
-- **Indexing strategy**: Optimize query performance
+- **Noise reduction**: Filter irrelevant content
 
 ## Technical Implementation
 
@@ -108,9 +93,9 @@ class JobMarketDataProcessor:
         )
         self.scaler = StandardScaler()
 
-    def process_pipeline(self, raw_data_path: str) -> pd.DataFrame:
+    def process_cleaning_pipeline(self, raw_data_path: str) -> pd.DataFrame:
         """
-        Complete data processing pipeline.
+        Data cleaning pipeline: from raw data to clean dataset.
         """
         # Load and combine data sources
         combined_data = self.combine_data_sources(raw_data_path)
@@ -118,17 +103,11 @@ class JobMarketDataProcessor:
         # Remove duplicates
         deduplicated_data = self.deduplicate_jobs(combined_data)
 
-        # Clean and normalize
-        cleaned_data = self.clean_data(deduplicated_data)
+        # Clean and validate data
+        cleaned_data = self.clean_and_validate_data(deduplicated_data)
 
-        # Generate embeddings
-        embedded_data = self.generate_embeddings(cleaned_data)
-
-        # Apply clustering
-        clustered_data = self.apply_clustering(embedded_data)
-
-        # Extract keywords
-        final_data = self.extract_keywords(clustered_data)
+        # Preprocess text
+        final_data = self.preprocess_text(cleaned_data)
 
         return final_data
 
@@ -142,24 +121,14 @@ class JobMarketDataProcessor:
         # Implementation for deduplication
         pass
 
-    def clean_data(self, data: pd.DataFrame) -> pd.DataFrame:
-        """Clean and normalize data"""
-        # Implementation for data cleaning
+    def clean_and_validate_data(self, data: pd.DataFrame) -> pd.DataFrame:
+        """Clean and validate data: handle missing values, standardize formats"""
+        # Implementation for data cleaning and validation
         pass
 
-    def generate_embeddings(self, data: pd.DataFrame) -> pd.DataFrame:
-        """Generate 725-dimensional embeddings"""
-        # Implementation for embedding generation
-        pass
-
-    def apply_clustering(self, data: pd.DataFrame) -> pd.DataFrame:
-        """Apply K-means clustering"""
-        # Implementation for clustering
-        pass
-
-    def extract_keywords(self, data: pd.DataFrame) -> pd.DataFrame:
-        """Extract keywords from clusters"""
-        # Implementation for keyword extraction
+    def preprocess_text(self, data: pd.DataFrame) -> pd.DataFrame:
+        """Preprocess text: clean HTML, normalize text, reduce noise"""
+        # Implementation for text preprocessing
         pass
 ```
 
@@ -178,34 +147,37 @@ class JobMarketDataProcessor:
 
 ## Output Data Structure
 
-The processed dataset included:
-- **Structured metadata**: Cleaned job titles, companies, locations, salaries
-- **Text embeddings**: 725-dimensional vector representations
-- **Cluster assignments**: K-means cluster labels for each job
-- **Keyword tags**: Extracted skill requirements and job characteristics
-- **Temporal data**: Posting dates and update tracking
+The cleaned dataset provides:
+- **Structured metadata**: Standardized job titles, companies, locations, salaries
+- **Quality-assured data**: Validated fields with consistent formatting
+- **Deduplicated records**: Single representation of each unique job posting
+- **Normalized text**: Clean descriptions ready for analysis
+- **Temporal integrity**: Properly handled posting dates and updates
 
-## Impact on Analysis
+## Foundation for Analysis
 
-### Foundation for Advanced Analytics
-- **Clustering insights**: Identified distinct job market segments
-- **Embedding visualization**: Enabled t-SNE dimensionality reduction
-- **Keyword analysis**: Revealed skill demand patterns
-- **Trend analysis**: Supported temporal market analysis
+### Prepared for Pattern Discovery
+- **Clean input data**: Enables reliable clustering and embedding generation
+- **Consistent formatting**: Supports accurate similarity comparisons
+- **Quality baseline**: Establishes trust in downstream analysis results
 
-### Dashboard Enablement
-- **Filtering capabilities**: Clean data enabled dynamic queries
-- **Visualization quality**: Structured data improved chart accuracy
-- **Performance**: Optimized database queries and aggregations
+### Database Readiness
+- **Standardized structure**: Facilitates efficient data storage and querying
+- **Validation checks**: Ensures data integrity throughout the pipeline
+- **Scalability foundation**: Clean data supports growing dataset requirements
 
 ## Navigation
 
-Explore each processing stage in detail:
+Explore each cleaning stage in detail:
 
 - **[Combining Data Sources](./combining-data)**: Integration of multiple scrapes
 - **[Deduplication](./deduplication)**: Duplicate removal strategies
-- **[Data Cleanup](./data-cleanup)**: Normalization and cleaning
-- **[Embeddings](./embeddings)**: Vector representation generation
-- **[Clustering](./clustering)**: K-means grouping analysis
-- **[Keyword Tagging](./keyword-tagging)**: Skill extraction and tagging
-- **[Database Storage](./database)**: Data persistence and querying
+- **[Data Cleanup](./data-cleanup)**: Normalization and validation
+- **[Data Inconsistencies](./data-inconsistencies)**: Known quality issues and limitations
+
+### Related Analysis Sections
+
+- **[Embeddings](../data-analysis/embeddings)**: Text representation techniques used on cleaned data
+- **[Clustering](../data-analysis/clustering)**: Pattern discovery applied to cleaned dataset
+- **[Keyword Tagging](../data-analysis/keyword-tagging)**: Automated categorization of job content
+- **[Database Architecture](../data-presentation/database)**: Storage design for cleaned data

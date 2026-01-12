@@ -15,15 +15,15 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://job-market-insights.vercel.app',
+  url: 'https://jobinsights.github.io/docs/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'your-github-username', // Usually your GitHub org/user name.
-  projectName: 'job-market-insights', // Usually your repo name.
+  organizationName: 'JobInsights', // Usually your GitHub org/user name.
+  projectName: 'docs', // Usually your repo name.
 
   onBrokenLinks: 'throw',
 
@@ -44,7 +44,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/JobInsights/docs/',
         },
         blog: {
           showReadingTime: true,
@@ -55,7 +55,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/JobInsights/docs/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -107,7 +107,7 @@ const config: Config = {
           position: 'left',
         },
         {
-          href: 'https://github.com/your-github-username/job-market-insights',
+          href: 'https://github.com/JobInsights/docs',
           label: 'GitHub',
           position: 'right',
         },
@@ -184,7 +184,7 @@ const config: Config = {
             },
             {
               label: 'Python Implementation',
-              to: '/docs/data-collection/indeed-scraping',
+              to: '/docs/data-collection/tools/',
             },
             {
               label: 'Interactive Demo',
