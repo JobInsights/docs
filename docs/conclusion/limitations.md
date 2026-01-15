@@ -8,42 +8,50 @@ sidebar_position: 1
 
 While our **Job Market Insights** project successfully demonstrates a comprehensive approach to data science career analysis, several limitations should be acknowledged to provide context for the results and guide future improvements.
 
-## Data Collection Limitations
+## Data Source Limitations
 
-### Sampling Bias
-
-#### Platform Dependency
+### Platform and Geographic Scope
 
 - **Single platform focus**: Analysis based primarily on Indeed.com job postings
 - **Geographic limitation**: Predominantly German market data (despite Indeed's international scope)
 - **Platform-specific posting patterns**: Different companies have varying posting frequencies and detail levels
 
-#### Temporal Limitations
+### Temporal Constraints
 
 - **Snapshot nature**: Data represents a specific time period (2024-2025)
 - **Market volatility**: Job market conditions change rapidly
 - **Seasonal variations**: Hiring patterns may vary by season or economic conditions
 
-### Scraping Constraints
+## Data Quality Limitations
 
-#### Anti-Bot Detection Evasion
-
-- **Tool selection compromise**: Chose user-friendly tools over custom scraping for reliability
-- **Rate limiting**: Respectful scraping may miss high-frequency updates
-- **Data freshness**: Trade-off between comprehensive coverage and real-time updates
-
-#### Data Completeness Issues
+### Completeness Issues
 
 - **Missing salary data**: Only ~65% of jobs include salary information
 - **Inconsistent descriptions**: Varying levels of detail in job postings
 - **Unstructured data**: Natural language processing challenges with inconsistent formatting
 
-#### Data Inconsistency Issues
+### Consistency and Accuracy Issues
 
 - **Tag vs. description mismatches**: Job descriptions may mention "Homeoffice möglich" but tags don't reflect remote work options
 - **Filter inconsistency**: Jobs not appearing in expected filter categories despite meeting criteria in description
 - **Metadata discrepancies**: Platform tags and extracted information may contradict job content
 - **Temporal inconsistencies**: Job posting metadata may not match current job status or requirements
+- **Full Homeoffice data limitations**: Full Homeoffice data was lost/only accessible via filters and given the amount, is unlikely to represent real full remote jobs. Therefore, we decided to group full and partial homeoffice into one category
+
+### Salary Data Anomalies
+
+Some job postings contain implausible salary values (e.g. extremely high placeholder numbers) that are syntactically valid but semantically incorrect. These entries may arise from data entry errors or deliberate attempts to increase ranking visibility on job platforms.
+
+While basic range checks can detect missing salary fields, detecting strategic misreporting is substantially harder without external ground truth or without making assumptions like (no job pays more than x amount). Such outliers can disproportionately affect aggregate statistics, percentile-based rankings, and salary-driven visualizations.
+
+## Data Collection Technical Limitations
+
+### Scraping and Access Constraints
+
+- **Tool selection compromise**: Chose user-friendly tools over custom scraping for reliability
+- **Rate limiting**: Respectful scraping may miss high-frequency updates
+- **Data freshness**: Trade-off between comprehensive coverage and real-time updates
+- **Anti-bot detection**: Platform restrictions limit collection frequency and completeness
 
 ## Analysis Limitations
 
@@ -182,12 +190,6 @@ Despite limitations, the project successfully demonstrates:
 - **Industry insights**: Provides companies with competitive intelligence
 - **Research foundation**: Establishes baseline for future studies
 - **Tool validation**: Demonstrates effectiveness of chosen methodologies
-
-#### Intentional or erroneous salary outliers
-
-Some job postings contain implausible salary values (e.g. extremely high placeholder numbers) that are syntactically valid but semantically incorrect. These entries may arise from data entry errors or deliberate attempts to increase ranking visibility on job platforms.
-
-While basic range checks can detect missing salary fields, detecting strategic misreporting is substantially harder without external ground truth or without making assumptions like (no job pays more than x amount). Such outliers can disproportionately affect aggregate statistics, percentile-based rankings, and salary-driven visualizations.
 
 ## Conclusion
 
