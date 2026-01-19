@@ -114,7 +114,12 @@ const sidebars: SidebarsConfig = {
           type: 'doc',
           id: 'data-cleaning/data-inconsistencies',
           label: 'Data Inconsistencies'
-        }
+        },
+        {
+          type: 'doc',
+          id: 'data-cleaning/location-preprocessing',
+          label: 'Location Preprocessing'
+        },
       ]
     },
     {
